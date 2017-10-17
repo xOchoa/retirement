@@ -19,6 +19,7 @@
   "dependencies": {
     "express": "4.16.2",
     "websocket": "1.0.24",
-    "node-bittrex-api": "0.7.6"
+    "node-bittrex-api": "0.7.6",
+    "colors": "1.1.2"
   }
 }
