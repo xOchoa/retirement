@@ -1,0 +1,24 @@
+{
+  "name": "retirement",
+  "version": "1.0.0",
+  "description": "Hopefully the start of my retirement.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xOchoa/retirement.git"
+  },
+  "author": "Alberto Ochoa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xOchoa/retirement/issues"
+  },
+  "homepage": "https://github.com/xOchoa/retirement#readme",
+  "dependencies": {
+    "express": "4.16.2",
+    "websocket": "1.0.24",
+    "node-bittrex-api": "0.7.6"
+  }
+}

@@ -1,2 +1,6 @@
-# retirment
-retirment plan
+# Retirment
+Retirement plan, hopefully.
+
+# Requirements
+*Node.js
+*webosckets
