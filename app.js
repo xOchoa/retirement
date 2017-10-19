@@ -4,8 +4,8 @@
   var colors = require('colors');
 
   bittrex.options({
-    'apikey' : "your api key",
-    'apisecret' : "your api secret",
+    'apikey' : "",
+    'apisecret' : "",
     'verbose' : true,
     'cleartext' : false
   });
@@ -16,6 +16,8 @@
   var NewBTCCoins  = [];
   var NewETHCoins  = [];
   var NewUSDTCoins = [];
+
+  var tmpCoins = [];
 
   function init(){
     bittrex.getmarketsummaries( function( data, err ) {
@@ -38,7 +40,7 @@
         console.log('ETH Based: ' + ETHCoins.length);
         console.log('USDT Based: ' + USDTCoins.length);
         
-        var intervalID = setInterval(compare, 10000);
+        var intervalID = setInterval(compare, 15000);
         
       }
     });
@@ -59,7 +61,7 @@
 
   function compare(){
     bittrex.getmarketsummaries( function( data, err ) {
-      if (data.success){
+      if (data !== null && data.success){
 
         NewBTCCoins  = [];
         NewETHCoins  = [];
@@ -88,7 +90,21 @@
             // Fees per trade .25%; which means .5% because of the buy and sell operations
             if (volPerChange > 0.05 && pricePerChange > 1.5){
               // Add a dictionary that saves which coin have already appeared here, probably save first price
-              console.log(colors.magenta(NewBTCCoins[i].MarketName) + ' Volume changed ' + colors.blue(volChange) + ' equals ' + colors.green(volPerChange.toFixed(2)) + '% change, the price changed from ' + colors.magenta(BTCCoins[i].Last) + ' to ' + colors.cyan(NewBTCCoins[i].Last) + ' equals ' + colors.yellow(pricePerChange.toFixed(2)) + '% -> https://bittrex.com/Market/Index?MarketName='+NewBTCCoins[i].MarketName+'');
+              if (typeof tmpCoins[NewBTCCoins[i].MarketName] !== 'undefined'){
+                var newTP = tmpCoins[BTCCoins[i].MarketName].timesPumping + 1;
+                tmpCoins[NewBTCCoins[i].MarketName].timesPumping = newTP;
+              }else{
+                tmpCoins[NewBTCCoins[i].MarketName] = {marketName: BTCCoins[i].MarketName, firstPrice: (BTCCoins[i].Last ), timesPumping : 1, firstVolume:  BTCCoins[i].Volume };
+              }
+              // console.log(tmpCoins[NewBTCCoins[i].MarketName]);
+              // console.log('_____________________________________________________')
+              //console.log(colors.magenta(NewBTCCoins[i].MarketName) + ' Volume changed ' + colors.blue(volChange) + ' equals ' + colors.green(volPerChange.toFixed(2)) + '% change, the price changed from ' + colors.magenta(BTCCoins[i].Last) + ' to ' + colors.cyan(NewBTCCoins[i].Last) + ' equals ' + colors.yellow(pricePerChange.toFixed(2)) + '%');
+              if (typeof tmpCoins[NewBTCCoins[i].MarketName].timesPumping !== 'undefined' && tmpCoins[NewBTCCoins[i].MarketName].timesPumping >= 3){
+                console.log(colors.bgRed('Check ' + tmpCoins[NewBTCCoins[i].MarketName].marketName) + 
+                '\n First Volume: ' + colors.blue(tmpCoins[NewBTCCoins[i].MarketName].firstVolume) + ' Current Volume: ' + colors.blue(NewBTCCoins[i].Volume) + ' % change: ' + colors.blue(volPerChange) +
+                '\n First Price: ' + colors.blue(tmpCoins[NewBTCCoins[i].MarketName].firstPrice) + ' Current Price: ' + colors.blue(NewBTCCoins[i].Last) + 
+                '\n Times Pumping: ' + tmpCoins[NewBTCCoins[i].MarketName].timesPumping);
+              }
             }
           }
         }
